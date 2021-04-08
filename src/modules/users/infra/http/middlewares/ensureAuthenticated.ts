@@ -7,7 +7,7 @@ import AppError from '@shared/errors/AppError';
 interface TokenPayload {
    iat: number;
    exp: number;
-   sub: number;
+   sub: string;
 }
 
 export default function ensureAuthenticated(request: Request, response: Response, next: NextFunction): void {
@@ -24,9 +24,9 @@ export default function ensureAuthenticated(request: Request, response: Response
 
       const { sub } = decoded as TokenPayload;
 
-      /* request.user = {
+      request.user = {
          id: sub,
-      }; */
+      };
 
       return next();
    } catch {

@@ -6,6 +6,8 @@ import IUsersRepository from '../repositories/IUsersRepository'; // Interface pa
 import IUserTokensRepository from '../repositories/IUserTokensRepository'; // Interface para os métodos
 import IHashProvider from '../providers/HashProvider/models/IHashProvider';
 
+/* import User from '../infra/typeorm/entities/User'; */
+
 interface IRequest {
    token: string;
    password: string;
@@ -22,12 +24,12 @@ class ResetPasswordService {
 
       @inject('HashProvider')
       private hashProvider: IHashProvider,
-    ) {}
+   ) { }
 
    public async execute({ token, password }: IRequest): Promise<void> {
       const userToken = await this.userTokensRepository.findByToken(token);
 
-      if(!userToken) {
+      if (!userToken) {
          throw new AppError('User token does not exists');
       }
 
@@ -40,7 +42,7 @@ class ResetPasswordService {
       const tokenCreatedAt = userToken.created_at;
       const compareDate = addHours(tokenCreatedAt, 2);
 
-      if(isAfter(Date.now(), compareDate)) {
+      if (isAfter(Date.now(), compareDate)) {
          throw new AppError('Token expired');
       }
 
