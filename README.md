@@ -1,59 +1,98 @@
-# project-node-api
+
+# project-riderize
+
+
 
 Projeto criado para estudos. Neste exemplo, utilizei as seguintes linguagens/frameworks/libs:
 
-		Node.js
-		Typescript
-		TypeORM
-		Docker
-		Postgresql
-		Nodemailer
-		Handlebars
-		Jest
 
-Atualmente, o projeto consiste no CRUD de usuários, com informações básicas (nome, email e senha). Existe a possibilidade também de alterar a senha do usuário através de envio de emails.
+
+Node.js
+
+Typescript
+
+TypeORM
+
+Docker
+
+Postgresql
+
+Jest
+
+
 
 ### Docker
 
-		docker run --name nodeapi_postgres -e POSTGRES_PASSWORD=docker -p 5432:5432 -d postgres
+
+
+docker run --name postgres_riderize -e POSTGRES_PASSWORD=docker -p 5432:5432 -d postgres
+
+
 
 ### Migrations
-		CreateUser
-		CreateUserTokens
-		CreateCar
-		AlterColumnNameCars
+
+CreateUser
+
+CreateUserTokens
+
+CreatePedal
+
+CreateSubscriptionPedal
+
+
 
 ### Scripts
-		dev:server = iniciar servidor
-		typeorm = utilizar cli do typeorm
-		test = iniciar testes automatizados existentes
+
+dev = iniciar servidor
+
+typeorm = utilizar cli do typeorm
+
+test = iniciar testes automatizados existentes
+
+
 
 ### Rotas disponíveis
 
+
+
 #### Users
-| Rota  | Tipo/URL  | Parâmetros  | Status code esperado  | Resposta esperada |
+
+| Rota | Tipo/URL | Parâmetros | Status code esperado | Resposta esperada |
+
 | ------------ | ------------ | ------------ | ------------ | ----------------- |
-| Create User  | POST http://localhost:3333/users | name: string, email: string, password: string  | 200  | user: { name: "xxx", email: "xxx", id: "xxx", created_at: "xxx", updated_at: "xxx" } |
-| Create Session  | POST http://localhost:3333/sessions  | email: string, password: string  | 200  | user: { name: "xxx", email: "xxx", id: "xxx", created_at: "xxx", updated_at: "xxx" }, token: "xxx" |
-|  Show profile | GET http://localhost:3333/profile  | -  | 200  | id: "xxx", name: "xxx", email: "xxx", created_at: "xxx", updated_at: "xxx" |
-|  Update profile | PUT http://localhost:3333/profile  | Pode-se inserir name: string, email: string e password: string (para alterar password, informar a senha anterior: old_password: string)  | 200  | id: "xxx", name: "xxx", email: "xxx", created_at: "xxx", updated_at: "xxx" |
-| Forgot password  | POST http://localhost:3333/password/forgot  | email: string  | 204  | - |
-| Reset password  | POST http://localhost:3333/password/reset | password: string, token: string  | 204  | - |
+
+| Create User | POST http://localhost:3333/users | name: string, email: string, password: string | 200 | user: { name: "xxx", email: "xxx", id: "xxx", created_at: "xxx", updated_at: "xxx" } |
+
+| Create Session | POST http://localhost:3333/sessions | email: string, password: string | 200 | user: { name: "xxx", email: "xxx", id: "xxx", created_at: "xxx", updated_at: "xxx" }, token: "xxx" |
+
+
+#### Pedals
+
+| Rota | Tipo/URL | Parâmetros | Status code esperado | Resposta esperada |
+
+| ------------ | ------------ | ------------ | ------------ | ----------------- |
+
+| Create Pedal | POST http://localhost:3333/pedals | name: string, start_date: Date, start_date_registration: Date, end_date_registration: Date, additional_information: string || null, start_place: string, participants_limit: number || null | 200 | { "id": "xxx", "name": "xxx", "start_date": "YYYY-MM-DD", "start_date_registration": "YYYY-MM-DD", "end_date_registration": "YYYY-MM-DD", "additional_information": "xxx", "start_place": "xxx", "participants_limit": "xxx } |
+
+
 
 ### Observações:
-- Show profile: necessita do token gerado pela rota Create Session. Inserir como Bearer
-- Update profile: necessita do token gerado pela rota Create Session. Inserir como Bearer
-- Forgot password: acessando a rota, será gerado uma URL no terminal para acessar uma página do Ethereal
-- Reset password: necessita do token gerado pela rota Forgot password. Acessando a página do Ethereal, existirá uma âncora. Clique nela e será redirecionado para uma página em branco. Na URL desta página conterá o token a ser capturado e ser anexado no JSON para a rota Reset password
 
-#### Cars
-| Rota  | Tipo/URL  | Parâmetros  | Status code esperado  | Resposta esperada |
+- Create Pedal: para criar um pedal, enviar junto da requisição um Bearer token de sessão. Para isso, criar um sessão (rota Create Session) antes de utilizar esta rota
+
+
+#### SubscriptionPedals
+
+| Rota | Tipo/URL | Parâmetros | Status code esperado | Resposta esperada |
+
 | ------------ | ------------ | ------------ | ------------ | ----------------- |
-| Create Car  | POST http://localhost:3333/cars | plate: string, user_id: uuid, model: string, brand: string, year: number  | 200  | { plate: "xxx1234", user_id: "xxx", model: "xxx", brand: "xxx", year: 1234, created_at: "xxx", updated_at: "xxx" } |
+
+| Subscribe in Pedal | POST http://localhost:3333/subscriptionPedals | ride_id: string, user_id: string | 200 | user: { id: "xxx", ride_id: "xxx", user_id: "xxx", subscription_date: "YYYY-MM-DD" } |
+
+| Show Users in Ride | GET http://localhost:3333/subscriptionPedals | ride_id: string | 200 | { [] } |
+
 
 ### Observações:
-- Create Car: user_id deve receber o id (uuid) de um usuário já criado.
 
-### Contato
-Estou aberto a críticas construtivas, dicas e/ou conselhos.
-Linkedin: https://www.linkedin.com/in/leonardo-mendes-furtado/
+- Subscribe in Pedal: para se inscrever em um pedal, enviar junto da requisição um Bearer token de sessão. Para isso, criar um sessão (rota Create Session) antes de utilizar esta rota. O campo ride_id se refere ao ID do pedal (gerado na resposta da rota Create Pedal).
+- Show Users in Ride: para visualizar os ciclistas cadastrados em um pedal, enviar junto da requisição um Bearer token de sessão. Para isso, criar um sessão (rota Create Session) antes de utilizar esta rota. O campo ride_id se refere ao ID do pedal (gerado na resposta da rota Create Pedal).

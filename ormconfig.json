@@ -4,7 +4,7 @@
    "port": 5432,
    "username": "postgres",
    "password": "docker",
-   "database": "nodeapi_pg",
+   "database": "postgres_riderize",
    "entities": [
       "./src/modules/**/infra/typeorm/entities/*.ts"
    ],
